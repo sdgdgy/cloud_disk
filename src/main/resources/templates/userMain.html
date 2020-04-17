@@ -11,8 +11,8 @@
 </head>
 
 <body>
-<script th:src="'https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js'"></script>
-<script th:src="'https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js'"></script>
+<!--<script th:src="'https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js'"></script>-->
+<!--<script th:src="'https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js'"></script>-->
 <script th:src="@{/user/js/jquery.min.js}"></script>
 <script th:src="@{/user/js/bootstrap.min.js}"></script>
 <script th:src="@{/user/js/perfect-scrollbar.min.js}"></script>
@@ -33,7 +33,7 @@
 
                 <nav class="sidebar-main">
                     <ul class="nav nav-drawer">
-                        <li class="nav-item active"><a><i class="mdi mdi-home"></i> 博客管理 </a></li>
+                        <li class="nav-item active"><a><i class="mdi mdi-home"></i> 主界面 </a></li>
 <!--                        <li class="nav-item nav-item-has-subnav">-->
 <!--                            <a><i class="mdi mdi-format-align-justify"></i> 关于表</a>-->
 <!--                        </li>-->
@@ -239,7 +239,7 @@
                                 <div class="form-group">
                                     <input type="hidden" class="form-control" id="path" th:value="${path}" name="path">
                                     <input type="text" class="form-control" id="newFolderName" name="newFolderName" onkeyup="this.value=this.value.replace(/[. ]/g,'')"
-                                           onafterpaste="this.value=this.value.replace(/[. ]/g,'')">
+                                           onafterpaste="this.value=this.value.replace(/[. ]/g,'')" required>
                                 </div>
                         </div>
                         <div class="modal-footer">
@@ -256,13 +256,13 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">提示:文件夹名字不能含有"."</h4>
+                            <h4 class="modal-title">提示:文件夹名字不能含有".",并且不能在同一目录下重名</h4>
                         </div>
                         <form th:action="@{/file/upload}" method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <input type="hidden" class="form-control" th:value="${path}" name="path">
-                                    <input type="file" class="form-control" name="file">
+                                    <input type="file" class="form-control" name="file" required>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -306,6 +306,11 @@
                                 </ul>
                             </div>
                             <div class="card-body">
+                                <div class="progress progress-lg">
+                                    <div class="progress-bar progress-bar-dark" role="progressbar" th:aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" th:style="'min-width:5em;width:'+${percentage}+'%;'">
+                                        [[${percentage}]]%;总容量30M;已用[[${size}]]M
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
                                     <input type="hidden" th:value="${path}" th:id="filepath">
                                     <a class="btn btn-primary" href="#newFolder" data-toggle="modal">新建文件夹</a>
@@ -342,6 +347,14 @@
     </div>
 </div>
 <script th:inline="javascript">
+    $(function(){
+        /*<![CDATA[*/
+        var msg = /*[[${msg}]]*/ null;
+        /*]]>*/
+        if(msg!=null){
+            alert(msg);
+        }
+    })
     function download(filename) {
         /*<![CDATA[*/
         var context = /*[[${#httpServletRequest.getContextPath()}]]*/ null;

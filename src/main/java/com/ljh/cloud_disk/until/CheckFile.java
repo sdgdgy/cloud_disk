@@ -5,12 +5,14 @@ import com.sun.deploy.net.HttpRequest;
 import java.io.File;
 
 public class CheckFile {
-    public String CheckFile(HttpRequest httpRequest,String path,String filename) {
-        File file=new File(path,filename);
+    public boolean CheckFile(String pathFileName) {
+        File file=new File(pathFileName);
         if (file.exists()) {
-            return "false";
+            return true;
         }else{
-            return "true";
+            return false;
         }
+    }
+    public CheckFile() {
     }
 }
