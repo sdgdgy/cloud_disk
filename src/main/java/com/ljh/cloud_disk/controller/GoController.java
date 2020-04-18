@@ -25,14 +25,16 @@ public class GoController {
         String path=request.getServletContext().getRealPath("/"+request.getSession().getAttribute("userId").toString()+"upload");
         Long size=FileUtils.sizeOfDirectory(new File(request.getServletContext().getRealPath("/"+request.getSession().getAttribute("userId").toString()+"upload")));
         FileTraversal fileTraversal=new FileTraversal();
+        //文件路径model
         model.addAttribute("fileList",fileTraversal.FileTraversal(path));
         model.addAttribute("path","/"+request.getSession().getAttribute("userId").toString()+"upload");
+        //进度条model
         model.addAttribute("size",String.format("%.2f", size.doubleValue()/1024/1024));
         model.addAttribute("percentage",String.format("%.2f", size.doubleValue()/1024/1024/30*100));
+        //路径导航model
+        String navigation="/"+request.getSession().getAttribute("userId").toString()+"upload";
+        String[] navigationArr = navigation.split("/");
+        model.addAttribute("navigationArr",navigationArr);
         return "userMain";
-    }
-    @RequestMapping("toTest")
-    public String toTest(){
-        return "test";
     }
 }

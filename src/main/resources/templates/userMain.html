@@ -232,14 +232,14 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">提示:文件夹名字不能含有"."</h4>
+                            <h4 class="modal-title">提示:文件夹名字不能含有"."," ","/","\"</h4>
                         </div>
                         <form th:action="@{/file/NewFolder}" method="post">
                         <div class="modal-body">
                                 <div class="form-group">
                                     <input type="hidden" class="form-control" id="path" th:value="${path}" name="path">
-                                    <input type="text" class="form-control" id="newFolderName" name="newFolderName" onkeyup="this.value=this.value.replace(/[. ]/g,'')"
-                                           onafterpaste="this.value=this.value.replace(/[. ]/g,'')" required>
+                                    <input type="text" class="form-control" id="newFolderName" name="newFolderName" onkeyup="this.value=this.value.replace(/[. /\\]/g,'')"
+                                           onafterpaste="this.value=this.value.replace(/[. /\\]/g,'')" required>
                                 </div>
                         </div>
                         <div class="modal-footer">
@@ -278,35 +278,26 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <ul class="nav-step step-anchor">
-                                    <li class="nav-step-item active">
-                                        <a href="#step-1">
-                                            <h6>步骤一</h6>
-                                            <p class="m-0">步骤一说明</p>
-                                        </a>
+                                <ol class="breadcrumb" th:if="${#request.getSession().getAttribute('userId')!='admin'}">
+                                    <li th:each="navigation,navigationStat:${navigationArr}" th:if="(not ${navigationStat.last}) and (not ${navigationStat.first})">
+                                        <a th:href="'javascript:navigation_path('+${navigationStat.index}+');'" th:text="${navigation}"></a>
+                                        <input type="hidden" th:id="'navigation'+${navigationStat.index}" th:value="${navigation}">
                                     </li>
-                                    <li class="nav-step-item">
-                                        <a href="#step-2">
-                                            <h6>步骤二</h6>
-                                            <p class="m-0">步骤二说明</p>
-                                        </a>
+                                    <li class="active" th:each="navigation,navigationStat:${navigationArr}" th:if="${navigationStat.last}" th:text="${navigation}"></li>
+                                </ol>
+                                <ol class="breadcrumb" th:if="${#request.getSession().getAttribute('userId')=='admin'}">
+                                    <li th:each="navigation,navigationStat:${navigationArr}" th:if="${navigationStat.first}">
+                                        <a th:href="'javascript:enter_path(\''+'/'+'\');'" th:text="Home"></a>
                                     </li>
-                                    <li class="nav-step-item">
-                                        <a href="#step-3">
-                                            <h6>步骤三</h6>
-                                            <p class="m-0">步骤三说明</p>
-                                        </a>
+                                    <li th:each="navigation,navigationStat:${navigationArr}" th:if="(not ${navigationStat.last}) and (not ${navigationStat.first})">
+                                        <a th:href="'javascript:navigation_path('+${navigationStat.index}+');'" th:text="${navigation}"></a>
+                                        <input type="hidden" th:id="'navigation'+${navigationStat.index}" th:value="${navigation}">
                                     </li>
-                                    <li class="nav-step-item">
-                                        <a href="#step-4">
-                                            <h6>步骤四</h6>
-                                            <p class="m-0">步骤四说明</p>
-                                        </a>
-                                    </li>
-                                </ul>
+                                    <li class="active" th:each="navigation,navigationStat:${navigationArr}" th:if="${navigationStat.last}" th:text="${navigation}"></li>
+                                </ol>
                             </div>
                             <div class="card-body">
-                                <div class="progress progress-lg">
+                                <div class="progress progress-lg" th:if="${#request.getSession().getAttribute('userId')!='admin'}">
                                     <div class="progress-bar progress-bar-dark" role="progressbar" th:aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" th:style="'min-width:5em;width:'+${percentage}+'%;'">
                                         [[${percentage}]]%;总容量30M;已用[[${size}]]M
                                     </div>
@@ -326,7 +317,7 @@
                                         <tr th:each="file:${fileList}">
                                             <td style="text-align:center" th:text="${file}"></td>
                                             <td style="text-align:center">
-                                                <a th:if="not ${file.toString().contains('.')}" th:href="@{'/file/filepath?path='+${path}+'/'+${file.toString()}}">进入 |</a>
+                                                <a th:if="not ${file.toString().contains('.')}" th:href="'javascript:enter_path(\''+${path}+'/'+${file.toString()}+'\');'">进入 |</a>
                                                 <a th:if="${file.toString().contains('.')}" th:href="'javascript:download(\''+${file.toString()}+'\');'">下载 |</a>
                                                 <a href="#myModal" data-toggle="modal" th:onclick="delete_file([[${file.toString()}]]);">删除</a>
                                             </td>
@@ -359,10 +350,43 @@
         /*<![CDATA[*/
         var context = /*[[${#httpServletRequest.getContextPath()}]]*/ null;
         /*]]>*/
-        window.location.href=context+"/file/download?filepath="+$("#filepath").val()+"&filename="+filename;
+        // window.location.href=context+"/file/download?filepath="+$("#filepath").val()+"&filename="+filename;
+        post(context+"/file/download",{"filepath":$("#filepath").val(),"filename":filename});
+    }
+    function enter_path(path) {
+        /*<![CDATA[*/
+        var context = /*[[${#httpServletRequest.getContextPath()}]]*/ null;
+        /*]]>*/
+        post(context+"/file/filepath",{"path":path});
     }
     function delete_file(name) {
         $("#name").val(name);
+    }
+    function navigation_path(index) {
+        /*<![CDATA[*/
+        var context = /*[[${#httpServletRequest.getContextPath()}]]*/ null;
+        /*]]>*/
+        var path="";
+        for(var i=1;i<=index;i++){
+            path=path+"/"+$("#"+"navigation"+i).val();
+        }
+        post(context+"/file/filepath",{"path":path});
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
     }
 </script>
 </body>

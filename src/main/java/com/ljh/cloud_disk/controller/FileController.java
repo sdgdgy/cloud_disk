@@ -35,10 +35,16 @@ public class FileController {
                 file.transferTo(new File(realPath +"/"+ file.getOriginalFilename()));
             }
         }
+        //文件路径model
         model.addAttribute("fileList",fileTraversal.FileTraversal(path1));
         model.addAttribute("path",path);
+        //进度条model
         model.addAttribute("size",String.format("%.2f", size.doubleValue()/1024/1024));
         model.addAttribute("percentage",String.format("%.2f", size.doubleValue()/1024/1024/30*100));
+        //路径导航model
+        String navigation=path;
+        String[] navigationArr = navigation.split("/");
+        model.addAttribute("navigationArr",navigationArr);
         return "userMain";
     }
     @RequestMapping(value="/download")
@@ -66,11 +72,17 @@ public class FileController {
     public String filepath(String path, Model model, HttpServletRequest request){
         String filepath=request.getServletContext().getRealPath(path);
         FileTraversal fileTraversal=new FileTraversal();
+        //文件路径model
         model.addAttribute("fileList",fileTraversal.FileTraversal(filepath));
         model.addAttribute("path",path);
+        //进度条model
         Long size= FileUtils.sizeOfDirectory(new File(request.getServletContext().getRealPath("/"+request.getSession().getAttribute("userId").toString()+"upload")));
         model.addAttribute("size",String.format("%.2f", size.doubleValue()/1024/1024));
         model.addAttribute("percentage",String.format("%.2f", size.doubleValue()/1024/1024/30*100));
+        //路径导航model
+        String navigation=path;
+        String[] navigationArr = navigation.split("/");
+        model.addAttribute("navigationArr",navigationArr);
         return "userMain";
     }
     @RequestMapping("NewFolder")
@@ -84,11 +96,17 @@ public class FileController {
             NewFolder newFolder=new NewFolder();
             newFolder.NewFolder(filepath);
         }
+        //文件路径model
         model.addAttribute("fileList",fileTraversal.FileTraversal(request.getServletContext().getRealPath(path)));
         model.addAttribute("path",path);
+        //进度条model
         Long size= FileUtils.sizeOfDirectory(new File(request.getServletContext().getRealPath("/"+request.getSession().getAttribute("userId").toString()+"upload")));
         model.addAttribute("size",String.format("%.2f", size.doubleValue()/1024/1024));
         model.addAttribute("percentage",String.format("%.2f", size.doubleValue()/1024/1024/30*100));
+        //路径导航model
+        String navigation=path;
+        String[] navigationArr = navigation.split("/");
+        model.addAttribute("navigationArr",navigationArr);
         return "userMain";
     }
     @RequestMapping("fileDelete")
@@ -102,6 +120,10 @@ public class FileController {
         Long size= FileUtils.sizeOfDirectory(new File(request.getServletContext().getRealPath("/"+request.getSession().getAttribute("userId").toString()+"upload")));
         model.addAttribute("size",String.format("%.2f", size.doubleValue()/1024/1024));
         model.addAttribute("percentage",String.format("%.2f", size.doubleValue()/1024/1024/30*100));
+        //路径导航model
+        String navigation=path;
+        String[] navigationArr = navigation.split("/");
+        model.addAttribute("navigationArr",navigationArr);
         return "userMain";
     }
 }

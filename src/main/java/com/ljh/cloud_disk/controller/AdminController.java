@@ -28,15 +28,20 @@ public class AdminController {
         User user=new User(id,password,0);
         try {
             List<User> list=userService.verifyUser(user);
-            httpSession.setAttribute("accountNumber",list.get(0).getAccountNumber());
+            httpSession.setAttribute("userId",list.get(0).getAccountNumber());
             if(list==null){
                 return "redirect:/go/toIndex";
             }else {
                 if(list.get(0).getIdentityType()==1){
                     String path=httpServletRequest.getServletContext().getRealPath("/");
                     FileTraversal fileTraversal=new FileTraversal();
+                    //文件路径model
                     model.addAttribute("fileList",fileTraversal.FileTraversal(path));
                     model.addAttribute("path","");
+                    //导航栏model
+                    String navigation=path;
+                    String[] navigationArr = navigation.split("/");
+                    model.addAttribute("navigationArr",navigationArr);
                     return "userMain";
                 }else{
                     httpSession.setAttribute("userId",list.get(0).getAccountNumber());
