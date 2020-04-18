@@ -37,4 +37,8 @@ public class GoController {
         model.addAttribute("navigationArr",navigationArr);
         return "userMain";
     }
+    @RequestMapping("to404")
+    public String to404(){
+        return "404";
+    }
 }
