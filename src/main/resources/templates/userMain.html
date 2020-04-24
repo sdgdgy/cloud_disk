@@ -33,17 +33,12 @@
 
                 <nav class="sidebar-main">
                     <ul class="nav nav-drawer">
-                        <li class="nav-item active"><a><i class="mdi mdi-home"></i> 主界面 </a></li>
-<!--                        <li class="nav-item nav-item-has-subnav">-->
-<!--                            <a><i class="mdi mdi-format-align-justify"></i> 关于表</a>-->
-<!--                        </li>-->
-<!--                        <li class="nav-item nav-item-has-subnav">-->
-<!--                            <a><i class="mdi mdi-format-align-justify"></i> 留言表</a>-->
-<!--                        </li>-->
+                        <li class="nav-item active"><a th:href="@{/go/toUserMain}"><i class="mdi mdi-home"></i> 主界面 </a></li>
+                        <li class="nav-item nav-item-has-subnav" th:if="${#request.getSession().getAttribute('userId')=='admin'}">
+                            <a th:href="@{/go/toPictureManagement}"><i class="mdi mdi-format-align-justify"></i> 图片管理</a>
+                        </li>
                     </ul>
                 </nav>
-
-
             </div>
 
         </aside>

@@ -39,9 +39,9 @@ public class AdminController {
                     model.addAttribute("fileList",fileTraversal.FileTraversal(path));
                     model.addAttribute("path","");
                     //导航栏model
-                    String navigation=path;
-                    String[] navigationArr = navigation.split("/");
-                    model.addAttribute("navigationArr",navigationArr);
+//                    String navigation=path;
+//                    String[] navigationArr = navigation.split("/");
+//                    model.addAttribute("navigationArr",navigationArr);
                     return "userMain";
                 }else{
                     httpSession.setAttribute("userId",list.get(0).getAccountNumber());

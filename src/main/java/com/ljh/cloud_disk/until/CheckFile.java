@@ -1,6 +1,5 @@
 package com.ljh.cloud_disk.until;
 
-import com.sun.deploy.net.HttpRequest;
 
 import java.io.File;
 

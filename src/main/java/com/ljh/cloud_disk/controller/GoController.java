@@ -4,6 +4,7 @@ import com.ljh.cloud_disk.until.FileTraversal;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,5 +41,14 @@ public class GoController {
     @RequestMapping("to404")
     public String to404(){
         return "404";
+    }
+    @RequestMapping("toPictureManagement")
+    public String toPictureManagement(Model model, HttpServletRequest request) throws Exception{
+        String path=request.getServletContext().getRealPath("/adminupload");
+        FileTraversal fileTraversal=new FileTraversal();
+        //文件路径model
+        model.addAttribute("fileList",fileTraversal.FileTraversal(path));
+//        model.addAttribute("path", ResourceUtils.getURL("classpath:").getPath());
+        return "pictureManagement";
     }
 }
